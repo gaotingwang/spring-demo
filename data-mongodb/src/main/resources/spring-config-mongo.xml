@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/data/mongo
+       http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+    <!--配置mongo相关参数-->
+    <context:property-placeholder location="classpath:mongodb.properties"/>
+
+    <!-- mongodb bean的仓库目录，会自动扫描扩展了MongoRepository接口的接口进行注入 -->
+    <mongo:repositories base-package="com.gtw.mongo.dao" />
+
+    <!--使用 <context:component-scan/>就不需要用下面的配置-->
+    <context:annotation-config />
+
+    <!-- mongodb的主要操作对象，所有对mongodb的增删改查的操作都是通过它完成 -->
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+    </bean>
+
+    <!-- mongo的工厂，通过它来取得mongo实例,dbname为mongodb的数据库名，没有的话会自动创建 -->
+    <mongo:db-factory dbname="${mongo.db.dbname}"
+                      mongo-ref="mongo" />
+
+    <!-- 定义mongo对象，对应的是mongodb官方jar包中的Mongo，replica-set设置集群副本的ip地址和端口 -->
+    <mongo:mongo-client id="mongo" host="${mongo.db.host}" port="${mongo.db.port}" credentials="${mongo.db.user}:${mongo.db.password}@${mongo.db.dbname}">
+        <mongo:client-options write-concern="NORMAL"
+                              threads-allowed-to-block-for-connection-multiplier="${mongo.db.threads.allowed.to.block.for.connection.multiplier}"
+                              connect-timeout="${mongo.db.connect.timeout}"
+                              max-wait-time="${mongo.db.max.wait.time}"
+                              socket-keep-alive="${mongo.db.socket.keep.alive}"
+                              socket-timeout="${mongo.db.socket.timeout}"/>
+    </mongo:mongo-client>
+
+    <!--<mongo:mongo id="mongo" replica-set="${mongo.db.ip}">
+        <mongo:options
+                connections-per-host="${mongo.db.connections.per.host}"
+                auto-connect-retry="${mongo.db.auto.connect.retry}"
+                slave-ok="${mongo.db.slave.ok}"
+                write-number="${mongo.db.write.number}"
+                write-timeout="${mongo.db.write.timeout}"
+                write-fsync="${mongo.db.write.fsync}" />
+    </mongo:mongo>-->
+
+</beans>
