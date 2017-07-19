@@ -30,7 +30,8 @@
 
     <!-- 定义mongo对象，对应的是mongodb官方jar包中的Mongo，replica-set设置集群副本的ip地址和端口 -->
     <mongo:mongo-client id="mongo" host="${mongo.db.host}" port="${mongo.db.port}" credentials="${mongo.db.user}:${mongo.db.password}@${mongo.db.dbname}">
-        <mongo:client-options write-concern="NORMAL"
+        <mongo:client-options connections-per-host="${mongo.db.connections.per.host}"
+                              write-concern="FSYNC_SAFE"
                               threads-allowed-to-block-for-connection-multiplier="${mongo.db.threads.allowed.to.block.for.connection.multiplier}"
                               connect-timeout="${mongo.db.connect.timeout}"
                               max-wait-time="${mongo.db.max.wait.time}"
@@ -40,7 +41,6 @@
 
     <!--<mongo:mongo id="mongo" replica-set="${mongo.db.ip}">
         <mongo:options
-                connections-per-host="${mongo.db.connections.per.host}"
                 auto-connect-retry="${mongo.db.auto.connect.retry}"
                 slave-ok="${mongo.db.slave.ok}"
                 write-number="${mongo.db.write.number}"
