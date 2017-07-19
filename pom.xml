@@ -19,6 +19,7 @@
 
     <modules>
         <module>data-mongodb</module>
+        <module>data-mybatis</module>
     </modules>
 
     <dependencies>
@@ -64,13 +65,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
-            <!-- Spring4 抛弃了JCL，使用SLF4J -->
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!--Bean工厂与bean的装配-->
         <dependency>
